@@ -161,7 +161,8 @@ public class Controleur implements Sujet {
     public Document translate(String lala) throws Exception {
         System.out.println("we here");
         String [] sug = new String[5];
-        String url = "https://translate.google.fr/?hl=fr#view=xml&op=translate&sl=fr&tl=ru&text="+lala;
+        String url = "https://translate.google.com/#fr|ru|"+lala;
+        System.out.println(url);
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();

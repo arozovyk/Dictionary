@@ -98,10 +98,10 @@ public class MenuPrincipal implements MenuPrincipalInterface {
                 String lala=(String)listSuggestion.getSelectionModel().getSelectedItem();
                 try {
                     testWV.getEngine().loadContent(controleur.getDefinitions(lala));
-                    Document translationGoogle = controleur.translate(lala);
                     System.out.println(controleur.translate(lala).getElementsByClass("gt-cd-c").first());
                     //transOrigin.getEngine().loadContent(translationGoogle.getElementsByClass("gt-cd-c").toString());
                     //transTarget.getEngine().loadContent(translationGoogle.getElementsByClass("gt-baf-table").toString());
+                    //https://stackoverflow.com/questions/8147284/how-to-use-google-translate-api-in-my-java-application
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
