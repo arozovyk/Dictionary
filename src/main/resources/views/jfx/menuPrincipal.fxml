@@ -12,7 +12,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="topNiveau" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="602.0" prefWidth="1053.0" spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.jfx.MenuPrincipal">
+<VBox fx:id="topNiveau" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="813.0" prefWidth="1264.0" spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.jfx.MenuPrincipal">
    <opaqueInsets>
       <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
    </opaqueInsets>
@@ -20,40 +20,43 @@
       <Cursor fx:constant="SE_RESIZE" />
    </cursor>
    <children>
-      <SplitPane orientation="VERTICAL" prefHeight="612.0" prefWidth="1053.0">
+      <SplitPane orientation="VERTICAL" prefHeight="830.0" prefWidth="1264.0">
         <items>
-            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="617.0" prefWidth="1051.0">
+            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="811.0" prefWidth="1259.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="334.0" minWidth="10.0" prefWidth="224.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.0" minWidth="0.0" prefWidth="62.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="782.0" minWidth="10.0" prefWidth="764.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints maxHeight="326.0" minHeight="0.0" prefHeight="326.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="301.0" minHeight="0.0" prefHeight="57.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="371.0" minHeight="0.0" prefHeight="340.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="441.0" minHeight="0.0" prefHeight="441.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <WebView fx:id="testWV" prefHeight="384.0" prefWidth="695.0" GridPane.columnIndex="2" />
                   <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                      <items>
                         <TextField fx:id="wordField" onAction="#getDefinitions" onKeyPressed="#majSuggesions2" prefHeight="26.0" prefWidth="223.0" />
-                        <ListView fx:id="listSuggestion" prefHeight="200.0" prefWidth="200.0" />
+                        <ListView fx:id="listSuggestion" onKeyPressed="#getDefinitionsListViewKey" onMouseClicked="#getDefinitionsListViewMouse" prefHeight="309.0" prefWidth="223.0" />
                      </items>
                   </SplitPane>
                   <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <items>
-                        <WebView fx:id="transOrigin" prefHeight="238.0" prefWidth="377.0" />
-                        <WebView fx:id="transTarget" prefHeight="237.0" prefWidth="377.0" />
+                        <WebView fx:id="transOrigin2" prefHeight="350.0" prefWidth="762.0" />
+                        <WebView fx:id="transTarget" prefHeight="200.0" prefWidth="200.0" />
                      </items>
                   </SplitPane>
-                  <SplitPane dividerPositions="0.18209876543209877" orientation="VERTICAL" prefHeight="326.0" prefWidth="94.0" GridPane.columnIndex="1">
+                  <SplitPane dividerPositions="0.14092140921409213" orientation="VERTICAL" prefHeight="326.0" prefWidth="94.0" GridPane.columnIndex="1">
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="39.0" prefWidth="130.0">
                            <children>
                               <Button layoutX="8.0" layoutY="16.0" mnemonicParsing="false" onAction="#getDefinitions" prefHeight="24.0" prefWidth="47.0" snapToPixel="false" text="Go !" />
                            </children>
                         </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="261.0" prefWidth="65.0" />
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="261.0" prefWidth="65.0">
+                           <children>
+                              <WebView fx:id="transOrigin" layoutY="14.0" prefHeight="200.0" prefWidth="155.0" visible="false" />
+                           </children></AnchorPane>
                     </items>
                   </SplitPane>
                </children>

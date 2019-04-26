@@ -130,8 +130,8 @@ public class Controleur implements Sujet {
 
     public String[] getSuggesions(String text) throws Exception {
 
-        String [] sug = new String[5];
-        String url = "https://fr.wiktionary.org/w/api.php?action=opensearch&format=xml&formatversion=2&search="+text+"&namespace=0%7C100%7C106%7C110&limit=5&suggest=true";
+        String [] sug = new String[10];
+        String url = "https://fr.wiktionary.org/w/api.php?action=opensearch&format=xml&formatversion=2&search="+text+"&namespace=0%7C100%7C106%7C110&limit=10&suggest=true";
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();

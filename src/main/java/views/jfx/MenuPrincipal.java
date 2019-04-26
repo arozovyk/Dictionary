@@ -1,4 +1,6 @@
 package views.jfx;
+import javafx.scene.input.MouseEvent;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.sun.webkit.WebPage;
@@ -17,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.jsoup.select.Elements;
 import views.MenuPrincipalInterface;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -32,6 +35,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
     public ListView listSuggestion;
     public WebView transOrigin;
+    public WebView transOrigin2;
     public WebView transTarget;
     String res="";
 
@@ -98,7 +102,8 @@ public class MenuPrincipal implements MenuPrincipalInterface {
                 String lala=(String)listSuggestion.getSelectionModel().getSelectedItem();
                 try {
                     testWV.getEngine().loadContent(controleur.getDefinitions(lala));
-                    System.out.println(controleur.translate(lala).getElementsByClass("gt-cd-c").first());
+                    //System.out.println(controleur.translate(lala).getElementsByClass("gt-cd-c").first());
+                    transOrigin.getEngine().load("https://translate.google.com/#fr|ru|"+lala);
                     //transOrigin.getEngine().loadContent(translationGoogle.getElementsByClass("gt-cd-c").toString());
                     //transTarget.getEngine().loadContent(translationGoogle.getElementsByClass("gt-baf-table").toString());
                     //https://stackoverflow.com/questions/8147284/how-to-use-google-translate-api-in-my-java-application
@@ -108,6 +113,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
             }
 
         });
+
         primaryStage.setTitle("Menu principal");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -116,11 +122,15 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
 
     public void getDefinitions(ActionEvent actionEvent) {
+
+
+
+        /*
         try {
             testWV.getEngine().loadContent(controleur.getDefinitions(res));
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 
@@ -170,7 +180,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         //TextFields.bindAutoCompletion(wordField,suggestions);
     }
 
-    public void getDefinitions2(KeyEvent keyEvent) {
+    public void getDefinitionsListViewKey(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
             try {
                 testWV.getEngine().loadContent(controleur.getDefinitions((String)listSuggestion.getSelectionModel().getSelectedItem()));
@@ -179,4 +189,22 @@ public class MenuPrincipal implements MenuPrincipalInterface {
             }
         }
     }
+
+    public void getDefinitionsListViewMouse(MouseEvent mouseEvent) {
+        String selectedItem=(String)listSuggestion.getSelectionModel().getSelectedItem();
+        wordField.setText(selectedItem);
+        try {
+            testWV.getEngine().loadContent(controleur.getDefinitions(selectedItem));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Document doc = Jsoup.parse((String)transOrigin.getEngine().executeScript("document.documentElement.outerHTML"));
+        Elements res=doc.getElementsByClass("gt-cd-c");
+        Elements res2=doc.getElementsByClass("gt-cc-r-i");
+        transTarget.getEngine().loadContent(res.first().toString());
+        transOrigin2.getEngine().loadContent(res2.first().toString());
+
+    }
+
+
 }
