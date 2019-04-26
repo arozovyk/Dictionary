@@ -31,8 +31,6 @@ import views.jfx.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
-
 @SuppressWarnings("Duplicates")
 
 public class Controleur implements Sujet {
@@ -170,22 +168,19 @@ public class Controleur implements Sujet {
 
     public void translate(WebView  transOrigin, WebView transTarget, WebView transOrigin2) throws Exception {
 
-        Timeline timer = new Timeline(new KeyFrame(Duration.millis(90),
+        Timeline timer = new Timeline(new KeyFrame(Duration.seconds(3),
                 new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
                         Document doc = Jsoup.parse((String) transOrigin.getEngine().executeScript("document.documentElement.outerHTML"));
                         Elements res=doc.getElementsByClass("gt-cd-c");
                         System.out.println(res);
-                        Elements res2=doc.getElementsByClass("gt-cc-r-i");
                         transTarget.getEngine().loadContent(res.first().toString());
-                        transOrigin2.getEngine().loadContent(res2.first().toString());
+                        transOrigin2.getEngine().loadContent(res.get(1).toString());
                     }
                 }));
-        timer.setCycleCount(Animation.INDEFINITE);
-        TimeUnit.SECONDS.sleep(5);
-        timer.stop();
-
+        timer.setCycleCount(1);
+        timer.play();
         //print result
     }
 }
