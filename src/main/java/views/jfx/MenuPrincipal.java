@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by YohanBoichut on 10/11/15.
@@ -104,6 +105,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
                     testWV.getEngine().loadContent(controleur.getDefinitions(lala));
                     //System.out.println(controleur.translate(lala).getElementsByClass("gt-cd-c").first());
                     transOrigin.getEngine().load("https://translate.google.com/#fr|ru|"+lala);
+                    controleur.translate(transOrigin,transTarget,transOrigin2);
                     //transOrigin.getEngine().loadContent(translationGoogle.getElementsByClass("gt-cd-c").toString());
                     //transTarget.getEngine().loadContent(translationGoogle.getElementsByClass("gt-baf-table").toString());
                     //https://stackoverflow.com/questions/8147284/how-to-use-google-translate-api-in-my-java-application
@@ -177,7 +179,6 @@ public class MenuPrincipal implements MenuPrincipalInterface {
                 return cell;
             }
         });
-        //TextFields.bindAutoCompletion(wordField,suggestions);
     }
 
     public void getDefinitionsListViewKey(KeyEvent keyEvent) {
@@ -194,16 +195,12 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         String selectedItem=(String)listSuggestion.getSelectionModel().getSelectedItem();
         wordField.setText(selectedItem);
         try {
+            transOrigin.getEngine().load("https://translate.google.com/#fr|ru|"+selectedItem);
             testWV.getEngine().loadContent(controleur.getDefinitions(selectedItem));
+            controleur.translate(transOrigin,transTarget,transOrigin2);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Document doc = Jsoup.parse((String)transOrigin.getEngine().executeScript("document.documentElement.outerHTML"));
-        Elements res=doc.getElementsByClass("gt-cd-c");
-        Elements res2=doc.getElementsByClass("gt-cc-r-i");
-        transTarget.getEngine().loadContent(res.first().toString());
-        transOrigin2.getEngine().loadContent(res2.first().toString());
-
     }
 
 

@@ -4,6 +4,14 @@ import controleur.notifications.Notification;
 import controleur.notifications.Sujet;
 import controleur.notifications.Observateur;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.web.WebView;
+import javafx.util.Duration;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,6 +31,8 @@ import views.jfx.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+
 @SuppressWarnings("Duplicates")
 
 public class Controleur implements Sujet {
@@ -158,28 +168,24 @@ public class Controleur implements Sujet {
         return sug;
     }
 
-    public Document translate(String lala) throws Exception {
-        System.out.println("we here");
-        String [] sug = new String[5];
-        String url = "https://translate.google.com/#fr|ru|"+lala;
-        System.out.println(url);
+    public void translate(WebView  transOrigin, WebView transTarget, WebView transOrigin2) throws Exception {
 
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("GET");
-        con.setRequestProperty("User-Agent", USER_AGENT);
+        Timeline timer = new Timeline(new KeyFrame(Duration.millis(90),
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        Document doc = Jsoup.parse((String) transOrigin.getEngine().executeScript("document.documentElement.outerHTML"));
+                        Elements res=doc.getElementsByClass("gt-cd-c");
+                        System.out.println(res);
+                        Elements res2=doc.getElementsByClass("gt-cc-r-i");
+                        transTarget.getEngine().loadContent(res.first().toString());
+                        transOrigin2.getEngine().loadContent(res2.first().toString());
+                    }
+                }));
+        timer.setCycleCount(Animation.INDEFINITE);
+        TimeUnit.SECONDS.sleep(5);
+        timer.stop();
 
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        System.out.println(response);
-        return Jsoup.parse(response.toString());
         //print result
     }
 }
