@@ -1,17 +1,11 @@
 package views.jfx;
-import javafx.scene.input.MouseEvent;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
-import com.sun.webkit.WebPage;
 import controleur.Controleur;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -19,30 +13,25 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.jsoup.select.Elements;
 import views.MenuPrincipalInterface;
-import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by YohanBoichut on 10/11/15.
  */
 public class MenuPrincipal implements MenuPrincipalInterface {
 
-    public ListView listSuggestion;
+    public ListView<String> listSuggestion;
     public WebView transOrigin;
     public WebView transOrigin2;
     public WebView transTarget;
-    String res="";
+    private String res="";
 
     public WebView testWV;
     public TextField wordField;
-    Controleur controleur;
+    private Controleur controleur;
 
     public void setControleur(Controleur controleur) {
         this.controleur = controleur;
@@ -55,8 +44,6 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
 
 
-    @FXML
-    private Button monBouton;
 
 
     private Stage primaryStage;
@@ -64,7 +51,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
     private Scene scene;
 
-    public void setScene(Scene scene) {
+    private void setScene(Scene scene) {
         this.scene = scene;
     }
 
@@ -72,25 +59,25 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
 
 
-    public void setPrimaryStage(Stage primaryStage) {
+    private void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
     @FXML
-    private TextField monChamp;
 
-    public static MenuPrincipal creerInstance(Controleur c, Stage primaryStage) {
+    static MenuPrincipal creerInstance(Controleur c, Stage primaryStage) {
 
         URL location = MenuPrincipal.class.getResource("/views/jfx/menuPrincipal.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
         Pane root = null;
         try {
-            root = (Pane) fxmlLoader.load();
+            root = fxmlLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
         MenuPrincipal vue = fxmlLoader.getController();
         vue.setControleur(c);
+        assert root != null;
         vue.setScene(new Scene(root, 1230, 660));
         vue.setPrimaryStage(primaryStage);
         return vue;
@@ -98,23 +85,6 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
 
     public void show() {
-        listSuggestion.setOnKeyPressed(keyEvent->{
-            if(keyEvent.getCode().equals(KeyCode.ENTER)){
-                String lala=(String)listSuggestion.getSelectionModel().getSelectedItem();
-                try {
-                    testWV.getEngine().loadContent(controleur.getDefinitions(lala));
-                    //System.out.println(controleur.translate(lala).getElementsByClass("gt-cd-c").first());
-                    transOrigin.getEngine().load("https://translate.google.com/#fr|ru|"+lala);
-                    controleur.translate(transOrigin,transTarget,transOrigin2);
-                    //transOrigin.getEngine().loadContent(translationGoogle.getElementsByClass("gt-cd-c").toString());
-                    //transTarget.getEngine().loadContent(translationGoogle.getElementsByClass("gt-baf-table").toString());
-                    //https://stackoverflow.com/questions/8147284/how-to-use-google-translate-api-in-my-java-application
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
 
         primaryStage.setTitle("Menu principal");
         primaryStage.setScene(scene);
@@ -123,16 +93,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
 
 
-    public void getDefinitions(ActionEvent actionEvent) {
-
-
-
-        /*
-        try {
-            testWV.getEngine().loadContent(controleur.getDefinitions(res));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+    public void getDefinitions() {
 
     }
 
@@ -140,34 +101,27 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
 
     public void majSuggesions2(KeyEvent keyEvent) {
-        if(keyEvent.getCode().equals(KeyCode.ENTER)||keyEvent.getCode().equals(KeyCode.TAB))
+        if(keyEvent.getCode().equals(KeyCode.ENTER)){
+            getDefinitionsListViewMouse();
+            return;
+        }
+        if(keyEvent.getCode().equals(KeyCode.TAB))
             return;
         if(keyEvent.getCode().equals(KeyCode.DOWN)){
             listSuggestion.requestFocus();
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    listSuggestion.scrollTo(0);
-                    listSuggestion.getSelectionModel().select(0);
-                }
-            });
+            listSuggestion.scrollTo(0);
+            listSuggestion.getSelectionModel().select(0);
         }
         if(keyEvent.getCode().equals(KeyCode.BACK_SPACE)&&!res.isEmpty())
           res=wordField.getText().substring(0,wordField.getText().length()-1);
         if(!keyEvent.getCode().equals(KeyCode.BACK_SPACE))
           res=wordField.getText()+ keyEvent.getText();
 
-        String [] suggestions={};
-        try {
-            suggestions = controleur.getSuggesions(res);
-            //TextFields.bindAutoCompletion(wordField,controleur.getSuggesions(wordField.getText()+keyEvent.getCharacter()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        listSuggestion.getItems().setAll(suggestions);
+        controleur.getSuggesions(res,listSuggestion);
+
         listSuggestion.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
             public ListCell<String> call(ListView<String> param) {
-                ListCell<String> cell = new ListCell<String>(){
+                return new ListCell<String>(){
                     @Override
                     protected void updateItem(String m, boolean bln) {
                         super.updateItem(m, bln);
@@ -176,28 +130,22 @@ public class MenuPrincipal implements MenuPrincipalInterface {
                         }
                     }
                 };
-                return cell;
             }
         });
     }
 
     public void getDefinitionsListViewKey(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
-            try {
-                testWV.getEngine().loadContent(controleur.getDefinitions((String)listSuggestion.getSelectionModel().getSelectedItem()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            getDefinitionsListViewMouse();
         }
     }
 
-    public void getDefinitionsListViewMouse(MouseEvent mouseEvent) {
-        String selectedItem=(String)listSuggestion.getSelectionModel().getSelectedItem();
+    public void getDefinitionsListViewMouse() {
+        String selectedItem= listSuggestion.getSelectionModel().getSelectedItem();
         wordField.setText(selectedItem);
         try {
-            transOrigin.getEngine().load("https://translate.google.com/#fr|ru|"+selectedItem);
             testWV.getEngine().loadContent(controleur.getDefinitions(selectedItem));
-            controleur.translate(transOrigin,transTarget,transOrigin2);
+            controleur.translate(transOrigin,transTarget,transOrigin2,selectedItem);
         } catch (Exception e) {
             e.printStackTrace();
         }

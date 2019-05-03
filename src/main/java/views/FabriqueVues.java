@@ -6,7 +6,6 @@ public interface FabriqueVues {
 
     MenuPrincipalInterface buildMenuPrincipalView(Controleur c);
 
-    AccueilInterface buildAccueilView(Controleur c);
 
 
 

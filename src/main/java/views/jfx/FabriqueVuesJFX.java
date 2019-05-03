@@ -6,7 +6,7 @@ import views.*;
 
 public class FabriqueVuesJFX implements FabriqueVues {
 
-    Stage primaryStage;
+    private Stage primaryStage;
 
     public FabriqueVuesJFX(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -18,10 +18,6 @@ public class FabriqueVuesJFX implements FabriqueVues {
 
     }
 
-    @Override
-    public AccueilInterface buildAccueilView(Controleur c) {
-        return AccueilView.creerInstance(c,primaryStage);
-    }
 
 
 

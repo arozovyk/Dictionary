@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="parisJFX:jar">
+    <output-path>$PROJECT_DIR$/../out</output-path>
+    <root id="archive" name="parisJFX.jar">
+      <element id="module-output" name="parisJFX" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/controlsfx/controlsfx/8.40.14/controlsfx-8.40.14.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jsoup/jsoup/1.8.3/jsoup-1.8.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
