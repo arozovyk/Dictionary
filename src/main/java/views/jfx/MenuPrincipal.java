@@ -1,6 +1,7 @@
 package views.jfx;
 
 import controleur.Controleur;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -108,10 +109,14 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         if(keyEvent.getCode().equals(KeyCode.TAB))
             return;
         if(keyEvent.getCode().equals(KeyCode.DOWN)){
-            listSuggestion.requestFocus();
-            listSuggestion.scrollTo(0);
-            listSuggestion.getSelectionModel().select(0);
+            Platform.runLater(() -> {
+                listSuggestion.getSelectionModel().clearSelection();
+                listSuggestion.requestFocus();
+                listSuggestion.getSelectionModel().select(0);
+                listSuggestion.getFocusModel().focus(0);
+            });
         }
+
         if(keyEvent.getCode().equals(KeyCode.BACK_SPACE)&&!res.isEmpty())
           res=wordField.getText().substring(0,wordField.getText().length()-1);
         if(!keyEvent.getCode().equals(KeyCode.BACK_SPACE))

@@ -101,8 +101,6 @@ public class Controleur implements Sujet {
 
     public void getSuggesions(String text, ListView<String> listSuggestion)  {
 
-
-
         Task<String []> getSugTask =new Task< String []>() {
             @Override
             protected  String [] call() throws Exception {
@@ -119,9 +117,7 @@ public class Controleur implements Sujet {
                 return sug;
             }
         };
-
         getSugTask.setOnSucceeded(event -> listSuggestion.getItems().setAll(getSugTask.getValue()));
-
         final Service< String []>suggestionService=new Service< String []>() {
             @Override
             protected Task< String []> createTask() {
@@ -129,8 +125,6 @@ public class Controleur implements Sujet {
             }
         };
         suggestionService.start();
-
-
     }
 
     public void translate(WebView transOrigin, WebView transTarget, WebView transOrigin2, String selectedItem)  {
@@ -150,19 +144,7 @@ public class Controleur implements Sujet {
         transOrigin.getEngine().getLoadWorker().stateProperty().addListener( cl);
 
 
-   /*
 
-
-        Timeline timer = new Timeline(new KeyFrame(Duration.seconds(2),
-                event -> {
-                    Document doc = Jsoup.parse((String) transOrigin.getEngine().executeScript("document.documentElement.outerHTML"));
-                    Elements res=doc.getElementsByClass("gt-cd-c");
-                    transTarget.getEngine().loadContent(res.first().toString());
-                    transOrigin2.getEngine().loadContent(res.get(1).toString());
-                }));
-        timer.setCycleCount(1);
-        timer.play();
-*/
 
     }
 }

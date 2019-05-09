@@ -36,7 +36,7 @@
                   <WebView fx:id="testWV" prefHeight="384.0" prefWidth="695.0" GridPane.columnIndex="2" />
                   <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                      <items>
-                        <TextField fx:id="wordField" onAction="#getDefinitions" onKeyPressed="#majSuggesions2" prefHeight="26.0" prefWidth="223.0" />
+                        <TextField fx:id="wordField" onKeyPressed="#majSuggesions2" prefHeight="26.0" prefWidth="223.0" />
                         <ListView fx:id="listSuggestion" onKeyPressed="#getDefinitionsListViewKey" onMouseClicked="#getDefinitionsListViewMouse" prefHeight="309.0" prefWidth="223.0" />
                      </items>
                   </SplitPane>
