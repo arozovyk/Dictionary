@@ -109,12 +109,15 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         if(keyEvent.getCode().equals(KeyCode.TAB))
             return;
         if(keyEvent.getCode().equals(KeyCode.DOWN)){
-            Platform.runLater(() -> {
-                listSuggestion.getSelectionModel().clearSelection();
-                listSuggestion.requestFocus();
-                listSuggestion.getSelectionModel().select(0);
-                listSuggestion.getFocusModel().focus(0);
+            listSuggestion.requestFocus();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    listSuggestion.scrollTo(0);
+                    listSuggestion.getSelectionModel().select(0);
+                }
             });
+            return;
         }
 
         if(keyEvent.getCode().equals(KeyCode.BACK_SPACE)&&!res.isEmpty())
