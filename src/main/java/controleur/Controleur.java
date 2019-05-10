@@ -126,7 +126,7 @@ public class Controleur implements Sujet {
 
     public void translate(WebView transOrigin, WebView transTarget, WebView transOrigin2, String selectedItem)  {
 
-        transOrigin.getEngine().load("https://translate.google.com/#fr|ru|"+selectedItem);
+        transOrigin.getEngine().load("https://translate.google.com/?hl=fr&tab=TT&authuser=0#view=home&op=translate&sl=fr&tl=ru&text="+selectedItem);
         transOrigin.getEngine().reload();
         ChangeListener<Worker.State> cl= (observable, oldValue, newValue) -> {
             if (newValue != Worker.State.SUCCEEDED) {
