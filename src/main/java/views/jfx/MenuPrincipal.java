@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
@@ -20,17 +21,15 @@ import javax.swing.event.HyperlinkEvent;
 import java.io.IOException;
 import java.net.URL;
 
-/**
- * Created by YohanBoichut on 10/11/15.
- */
+
 public class MenuPrincipal implements MenuPrincipalInterface {
 
     public ListView<String> listSuggestion;
     public WebView hiddenWV;
     public WebView transOrigin;
     public WebView transTarget;
+    public ListView<String> historique;
     private String res="";
-
     public WebView definitionWV;
     public TextField wordField;
     private Controleur controleur;
@@ -42,14 +41,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
     @FXML
     VBox topNiveau;
 
-
-
-
-
-
-
     private Stage primaryStage;
-
 
     private Scene scene;
 
@@ -57,32 +49,17 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         this.scene = scene;
     }
 
-
-
-
-
     private void setPrimaryStage(Stage primaryStage) {
         WebViewHyperlinkListener eventPrintingListener = event -> {
             if (event.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)){
-                String linkClicked = event.getDescription().toLowerCase();
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            definitionWV.getEngine().loadContent(controleur.getDefinitions(linkClicked));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                controleur.translate(hiddenWV,transTarget, transOrigin,linkClicked);
-                wordField.setText(linkClicked);
-                controleur.getSuggesions(linkClicked,listSuggestion);
+                res = event.getDescription().toLowerCase();
+                defineWord(res);
+                wordField.setText(res);
+                controleur.getSuggesions(res,listSuggestion);
+                historique.getItems().add(historique.getItems().size(),res);
             }
             return false;
         };
-
-
         WebViews.addHyperlinkListener(definitionWV, eventPrintingListener);
         this.primaryStage = primaryStage;
     }
@@ -101,7 +78,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         MenuPrincipal vue = fxmlLoader.getController();
         vue.setControleur(c);
         assert root != null;
-        vue.setScene(new Scene(root, 1230, 660));
+        vue.setScene(new Scene(root, 1230, 830));
         vue.setPrimaryStage(primaryStage);
         return vue;
     }
@@ -119,9 +96,8 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
     public void getSuggesions(KeyEvent keyEvent) {
 
-
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
-            getDefinitionsListViewMouse();
+            defineWord(res);
             return;
         }
         if(keyEvent.getCode().equals(KeyCode.TAB))
@@ -153,21 +129,37 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         }
     }
 
-
-
     public void getDefinitionsListViewMouse() {
         String selectedItem= listSuggestion.getSelectionModel().getSelectedItem();
-        if(selectedItem==null){
-            selectedItem=res;
-        }
         wordField.setText(selectedItem);
-        try {
-            definitionWV.getEngine().loadContent(controleur.getDefinitions(selectedItem));
-            controleur.translate(hiddenWV,transTarget, transOrigin,selectedItem);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        defineWord(selectedItem);
+        historique.getItems().add(historique.getItems().size(),selectedItem);
     }
 
 
+    private void defineWord(String word){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    definitionWV.getEngine().loadContent(controleur.getDefinitions(word));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        controleur.translate(hiddenWV,transTarget, transOrigin,word);
+    }
+
+    public void getDefinitionsListViewKeyHist(KeyEvent keyEvent) {
+        if(keyEvent.getCode().equals(KeyCode.ENTER)){
+            getDefinitionsListViewMouseHist();
+        }
+    }
+
+    public void getDefinitionsListViewMouseHist() {
+        String selectedItem= historique.getSelectionModel().getSelectedItem();
+        wordField.setText(selectedItem);
+        defineWord(selectedItem);
+    }
 }

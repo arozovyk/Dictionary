@@ -30,7 +30,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Stream;
 
 public class Controleur implements Sujet {
 
@@ -117,13 +116,13 @@ public class Controleur implements Sujet {
             }
         };
         getSugTask.setOnSucceeded(event -> listSuggestion.getItems().setAll(getSugTask.getValue()));
-        final Service< String []>suggestionService=new Service< String []>() {
+        new Service< String []>() {
             @Override
             protected Task< String []> createTask() {
                 return getSugTask;
             }
-        };
-        suggestionService.start();
+        }.start();
+
         listSuggestion.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
             public ListCell<String> call(ListView<String> param) {
                 return new ListCell<String>(){
