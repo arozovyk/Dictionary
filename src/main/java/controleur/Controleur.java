@@ -78,7 +78,20 @@ public class Controleur implements Sujet {
         Element content =doc.getElementsByClass("mw-parser-output").first();
         Element title = content.getElementsByTag("p").first();
         Element significations= content.getElementsByTag("ol").first();
-        return title+"\n"+significations;
+        return applyWCSS(title+"\n"+significations);
+    }
+
+    private String applyWCSS(String wikiDef) {
+        StringBuilder page = new StringBuilder("<!doctype html>\n" +
+                "<html lang=\"fr\">\n" +
+                "<head>\n" +
+                "  <meta charset=\"utf-8\">\n"
+                + "<style> body {background-color: #C0C0C0;}");
+
+        page.append(" </style>" + "</head>\n" + "<body>\n").append(wikiDef).append("</body>\n").append("</html>");
+        // System.out.println(page);
+        return page.toString();
+
     }
 
     private Document getHtmlContent(HttpURLConnection con) throws Exception {
@@ -167,6 +180,7 @@ public class Controleur implements Sujet {
     }
 
     private String applyGCSS(String toString) {
+        System.out.println(toString);
         StringBuilder page = new StringBuilder("<!doctype html>\n" +
                 "<html lang=\"fr\">\n" +
                 "<head>\n" +
@@ -183,7 +197,14 @@ public class Controleur implements Sujet {
              ) {
             page.append(s);
         }
-        page.append(" </style>" + "</head>\n" + "<body>\n").append(toString).append("</body>\n").append("</html>");
+        page.append("body {background-color: #C0C0C0;}");
+        page.append("span.gt-def-num {color: #4169E1;}");
+        page.append(".gt-cd-pos {color: #4169E1;}");
+        page.append(".gt-baf-back {color: #666666;}");
+
+
+
+        page.append("</style>" + "</head>\n" + "<body>\n").append(toString).append("</body>\n").append("</html>");
        // System.out.println(page);
         return page.toString();
 
