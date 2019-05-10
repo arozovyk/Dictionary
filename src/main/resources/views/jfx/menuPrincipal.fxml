@@ -33,7 +33,7 @@
                   <RowConstraints maxHeight="441.0" minHeight="0.0" prefHeight="441.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <WebView fx:id="testWV" prefHeight="384.0" prefWidth="695.0" GridPane.columnIndex="2" />
+                  <WebView fx:id="definitionWV" prefHeight="384.0" prefWidth="695.0" GridPane.columnIndex="2" />
                   <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                      <items>
                         <TextField fx:id="wordField" onKeyPressed="#getSuggesions" prefHeight="26.0" prefWidth="223.0" />

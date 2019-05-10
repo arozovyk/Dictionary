@@ -175,7 +175,7 @@ public class Controleur implements Sujet {
                 + "<style> div.gt-def-row {display:inline;}");
         ArrayList<String> ccsLines=new ArrayList<>();
         try{
-            Files.lines(Paths.get(System.getProperty("user.dir")+"/src/main/ressources/css/style1.css")).forEach(ccsLines::add);
+            Files.lines(Paths.get(System.getProperty("user.dir")+"/src/main/resources/css/style1.css")).forEach(ccsLines::add);
         } catch (IOException e) {
             e.printStackTrace();
         }

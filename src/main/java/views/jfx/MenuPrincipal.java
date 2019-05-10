@@ -12,7 +12,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import org.codefx.libfx.control.webview.WebViewHyperlinkListener;
 import org.codefx.libfx.control.webview.WebViews;
 import views.MenuPrincipalInterface;
@@ -32,7 +31,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
     public WebView transTarget;
     private String res="";
 
-    public WebView testWV;
+    public WebView definitionWV;
     public TextField wordField;
     private Controleur controleur;
 
@@ -66,11 +65,16 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         WebViewHyperlinkListener eventPrintingListener = event -> {
             if (event.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)){
                 String linkClicked = event.getDescription().toLowerCase();
-                try {
-                    testWV.getEngine().loadContent(controleur.getDefinitions(linkClicked));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            definitionWV.getEngine().loadContent(controleur.getDefinitions(linkClicked));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 controleur.translate(hiddenWV,transTarget, transOrigin,linkClicked);
                 wordField.setText(linkClicked);
                 controleur.getSuggesions(linkClicked,listSuggestion);
@@ -79,7 +83,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         };
 
 
-        WebViews.addHyperlinkListener(testWV, eventPrintingListener);
+        WebViews.addHyperlinkListener(definitionWV, eventPrintingListener);
         this.primaryStage = primaryStage;
     }
 
@@ -153,12 +157,12 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
     public void getDefinitionsListViewMouse() {
         String selectedItem= listSuggestion.getSelectionModel().getSelectedItem();
-        if(selectedItem.isEmpty()){
+        if(selectedItem==null){
             selectedItem=res;
         }
         wordField.setText(selectedItem);
         try {
-            testWV.getEngine().loadContent(controleur.getDefinitions(selectedItem));
+            definitionWV.getEngine().loadContent(controleur.getDefinitions(selectedItem));
             controleur.translate(hiddenWV,transTarget, transOrigin,selectedItem);
         } catch (Exception e) {
             e.printStackTrace();
