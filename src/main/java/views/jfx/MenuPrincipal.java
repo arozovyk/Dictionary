@@ -2,7 +2,6 @@ package views.jfx;
 
 import controleur.Controleur;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,8 +13,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.codefx.libfx.control.webview.WebViewHyperlinkListener;
+import org.codefx.libfx.control.webview.WebViews;
 import views.MenuPrincipalInterface;
 
+import javax.swing.event.HyperlinkEvent;
 import java.io.IOException;
 import java.net.URL;
 
@@ -25,8 +27,8 @@ import java.net.URL;
 public class MenuPrincipal implements MenuPrincipalInterface {
 
     public ListView<String> listSuggestion;
+    public WebView hiddenWV;
     public WebView transOrigin;
-    public WebView transOrigin2;
     public WebView transTarget;
     private String res="";
 
@@ -61,13 +63,29 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
 
     private void setPrimaryStage(Stage primaryStage) {
+        WebViewHyperlinkListener eventPrintingListener = event -> {
+            if (event.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)){
+                String linkClicked = event.getDescription().toLowerCase();
+                try {
+                    testWV.getEngine().loadContent(controleur.getDefinitions(linkClicked));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                controleur.translate(hiddenWV,transTarget, transOrigin,linkClicked);
+                wordField.setText(linkClicked);
+                controleur.getSuggesions(linkClicked,listSuggestion);
+            }
+            return false;
+        };
+
+
+        WebViews.addHyperlinkListener(testWV, eventPrintingListener);
         this.primaryStage = primaryStage;
     }
 
     @FXML
 
     static MenuPrincipal creerInstance(Controleur c, Stage primaryStage) {
-
         URL location = MenuPrincipal.class.getResource("/views/jfx/menuPrincipal.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
         Pane root = null;
@@ -86,22 +104,18 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
 
     public void show() {
-
-        primaryStage.setTitle("Menu principal");
+        primaryStage.setTitle("Dictionnaire");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
 
 
-    public void getDefinitions() {
-
-    }
 
 
+    public void getSuggesions(KeyEvent keyEvent) {
 
 
-    public void majSuggesions2(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
             getDefinitionsListViewMouse();
             return;
@@ -113,7 +127,6 @@ public class MenuPrincipal implements MenuPrincipalInterface {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    listSuggestion.scrollTo(0);
                     listSuggestion.getSelectionModel().select(0);
                 }
             });
@@ -126,21 +139,9 @@ public class MenuPrincipal implements MenuPrincipalInterface {
           res=wordField.getText()+ keyEvent.getText();
 
         controleur.getSuggesions(res,listSuggestion);
-
-        listSuggestion.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-            public ListCell<String> call(ListView<String> param) {
-                return new ListCell<String>(){
-                    @Override
-                    protected void updateItem(String m, boolean bln) {
-                        super.updateItem(m, bln);
-                        if (m != null) {
-                            setText(m);
-                        }
-                    }
-                };
-            }
-        });
     }
+
+
 
     public void getDefinitionsListViewKey(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
@@ -148,12 +149,17 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         }
     }
 
+
+
     public void getDefinitionsListViewMouse() {
         String selectedItem= listSuggestion.getSelectionModel().getSelectedItem();
+        if(selectedItem.isEmpty()){
+            selectedItem=res;
+        }
         wordField.setText(selectedItem);
         try {
             testWV.getEngine().loadContent(controleur.getDefinitions(selectedItem));
-            controleur.translate(transOrigin,transTarget,transOrigin2,selectedItem);
+            controleur.translate(hiddenWV,transTarget, transOrigin,selectedItem);
         } catch (Exception e) {
             e.printStackTrace();
         }

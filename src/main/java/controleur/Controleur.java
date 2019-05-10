@@ -8,8 +8,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.web.WebView;
+import javafx.util.Callback;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -122,6 +124,20 @@ public class Controleur implements Sujet {
             }
         };
         suggestionService.start();
+        listSuggestion.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            public ListCell<String> call(ListView<String> param) {
+                return new ListCell<String>(){
+                    @Override
+                    protected void updateItem(String m, boolean bln) {
+                        super.updateItem(m, bln);
+                        if (m != null) {
+                            setText(m);
+                        }
+                    }
+                };
+            }
+        });
+
     }
 
     public void translate(WebView transOrigin, WebView transTarget, WebView transOrigin2, String selectedItem)  {
@@ -135,14 +151,13 @@ public class Controleur implements Sujet {
             Document doc = Jsoup.parse((String) transOrigin.getEngine().executeScript("document.documentElement.outerHTML"));
             Elements res = doc.getElementsByClass("gt-cd-c");
             Element shortDefinitions =res.get(1);
-            Element tranlations =res.first();
+            Element translations =res.first();
             for (Element number : shortDefinitions.getElementsByClass("gt-def-num")){
                 number.prependText("(");
                 number.appendText(") ");
-                //System.out.println(number);
             }
-            transTarget.getEngine().loadContent(applyGCSS(res.first().toString()));
-            transOrigin2.getEngine().loadContent(applyGCSS(res.get(1).toString()));
+            transTarget.getEngine().loadContent(applyGCSS(translations.toString()));
+            transOrigin2.getEngine().loadContent(applyGCSS(shortDefinitions.toString()));
         };
 
         transOrigin.getEngine().getLoadWorker().stateProperty().addListener( cl);
@@ -160,7 +175,7 @@ public class Controleur implements Sujet {
                 + "<style> div.gt-def-row {display:inline;}");
         ArrayList<String> ccsLines=new ArrayList<>();
         try{
-            Files.lines(Paths.get(System.getProperty("user.dir")+"/src/main/java/controleur/css/style1.css")).forEach(ccsLines::add);
+            Files.lines(Paths.get(System.getProperty("user.dir")+"/src/main/ressources/css/style1.css")).forEach(ccsLines::add);
         } catch (IOException e) {
             e.printStackTrace();
         }

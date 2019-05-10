@@ -36,13 +36,13 @@
                   <WebView fx:id="testWV" prefHeight="384.0" prefWidth="695.0" GridPane.columnIndex="2" />
                   <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                      <items>
-                        <TextField fx:id="wordField" onKeyPressed="#majSuggesions2" prefHeight="26.0" prefWidth="223.0" />
+                        <TextField fx:id="wordField" onKeyPressed="#getSuggesions" prefHeight="26.0" prefWidth="223.0" />
                         <ListView fx:id="listSuggestion" onKeyPressed="#getDefinitionsListViewKey" onMouseClicked="#getDefinitionsListViewMouse" prefHeight="309.0" prefWidth="223.0" />
                      </items>
                   </SplitPane>
                   <SplitPane dividerPositions="0.48067393458870167" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <items>
-                        <WebView fx:id="transOrigin2" prefHeight="350.0" prefWidth="762.0" />
+                        <WebView fx:id="transOrigin" prefHeight="350.0" prefWidth="762.0" />
                         <WebView fx:id="transTarget" prefHeight="200.0" prefWidth="200.0" />
                      </items>
                   </SplitPane>
@@ -51,7 +51,7 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="368.0" prefWidth="0.0" />
                     </items>
                   </SplitPane>
-                  <WebView fx:id="transOrigin" prefHeight="200.0" prefWidth="155.0" visible="false" GridPane.rowIndex="1" />
+                  <WebView fx:id="hiddenWV" prefHeight="200.0" prefWidth="155.0" visible="false" GridPane.rowIndex="1" />
                </children>
             </GridPane>
         </items>
