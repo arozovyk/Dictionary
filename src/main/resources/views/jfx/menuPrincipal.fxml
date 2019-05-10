@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.web.*?>
 <?import java.lang.*?>
@@ -22,11 +23,11 @@
    <children>
       <SplitPane orientation="VERTICAL" prefHeight="830.0" prefWidth="1264.0">
         <items>
-            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="811.0" prefWidth="1259.0">
+            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="825.0" prefWidth="1259.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="334.0" minWidth="10.0" prefWidth="233.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="334.0" minWidth="10.0" prefWidth="326.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.0" minWidth="0.0" prefWidth="0.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1061.0" minWidth="10.0" prefWidth="1026.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1061.0" minWidth="10.0" prefWidth="933.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="490.0" minHeight="0.0" prefHeight="475.0" vgrow="SOMETIMES" />
@@ -38,7 +39,7 @@
                   <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                      <items>
                         <TextField fx:id="wordField" onKeyPressed="#getSuggesions" prefHeight="26.0" prefWidth="223.0" />
-                        <ListView fx:id="listSuggestion" onKeyPressed="#getDefinitionsListViewKey" onMouseClicked="#getDefinitionsListViewMouse" prefHeight="309.0" prefWidth="223.0" />
+                        <ListView fx:id="listSuggestion" onKeyPressed="#getDefinitionsListViewKey" onMouseClicked="#getDefinitionsListViewMouse" prefHeight="401.0" prefWidth="319.0" />
                      </items>
                   </SplitPane>
                   <SplitPane dividerPositions="0.48067393458870167" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
@@ -53,13 +54,37 @@
                     </items>
                   </SplitPane>
                   <WebView fx:id="hiddenWV" prefHeight="200.0" prefWidth="155.0" visible="false" GridPane.rowIndex="2" />
-                  <AnchorPane prefHeight="444.0" prefWidth="220.0" GridPane.rowIndex="2">
+                  <AnchorPane prefHeight="351.0" prefWidth="233.0" GridPane.rowIndex="2">
                      <children>
-                        <Label alignment="TOP_CENTER" layoutX="88.0" layoutY="30.0" prefHeight="3.0" prefWidth="74.0" text="Historique" />
-                        <ListView fx:id="historique" layoutX="4.0" layoutY="49.0" onKeyPressed="#getDefinitionsListViewKeyHist" onMouseClicked="#getDefinitionsListViewMouseHist" prefHeight="271.0" prefWidth="206.0" />
+                        <Label alignment="TOP_CENTER" layoutX="110.0" layoutY="14.0" prefHeight="3.0" prefWidth="74.0" text="Historique" />
+                        <ListView fx:id="historique" layoutX="4.0" layoutY="31.0" onKeyPressed="#getDefinitionsListViewKeyHist" onMouseClicked="#getDefinitionsListViewMouseHist" prefHeight="282.0" prefWidth="143.0" />
+                        <Button layoutX="4.0" layoutY="317.0" mnemonicParsing="false" onAction="#effacerLHistorique" prefHeight="26.0" prefWidth="64.0" text="Effacer" />
+                        <ListView fx:id="targetHistory" layoutX="147.0" layoutY="31.0" prefHeight="282.0" prefWidth="158.0" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <children>
+                        <Label layoutY="7.0" prefHeight="26.0" prefWidth="47.0" style="-fx-text-fill: #87CEFA;" text="Mot:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="motOrigineLabel" layoutX="35.0" layoutY="-1.0" prefHeight="39.0" prefWidth="413.0" text="chat">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="448.0" layoutY="7.0" prefHeight="26.0" prefWidth="74.0" style="-fx-text-fill: #87CEFA;" text="Перевод:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="motTranslatedLabel" layoutX="522.0" layoutY="-1.0" prefHeight="39.0" prefWidth="244.0" text="кот">
+                           <font>
+                              <Font size="22.0" />
+                           </font>
+                        </Label>
+                     </children></AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
                </children>
             </GridPane>

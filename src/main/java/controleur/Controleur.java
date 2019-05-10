@@ -5,9 +5,11 @@ import controleur.notifications.Sujet;
 import controleur.notifications.Observateur;
 
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.web.WebView;
@@ -47,6 +49,7 @@ public class Controleur implements Sujet {
             observateurs = new ArrayList<>();
             this.initialisationVues();
             this.maVue.show();
+            this.maVue.initWelcome();
         }
 
 
@@ -115,8 +118,8 @@ public class Controleur implements Sujet {
         Task<String []> getSugTask =new Task< String []>() {
             @Override
             protected  String [] call() throws Exception {
-                String [] sug = new String[10];
-                String url = "https://fr.wiktionary.org/w/api.php?action=opensearch&format=xml&formatversion=2&search="+text+"&namespace=0%7C100%7C106%7C110&limit=10&suggest=true";
+                String [] sug = new String[17];
+                String url = "https://fr.wiktionary.org/w/api.php?action=opensearch&format=xml&formatversion=2&search="+text+"&namespace=0%7C100%7C106%7C110&limit=16&suggest=true";
                 URL obj = new URL(url);
                 Document doc =getHtmlContent((HttpURLConnection) obj.openConnection());
                 Elements content =doc.getElementsByTag("Item");
@@ -152,24 +155,34 @@ public class Controleur implements Sujet {
 
     }
 
-    public void translate(WebView transOrigin, WebView transTarget, WebView transOrigin2, String selectedItem)  {
+    public void translate(WebView transOrigin, WebView transTarget, WebView transOrigin2, String selectedItem, Label motTranslatedLabel, ListView<String> targetHistorique, ListView<String> historique)  {
 
         transOrigin.getEngine().load("https://translate.google.com/?hl=fr&tab=TT&authuser=0#view=home&op=translate&sl=fr&tl=ru&text="+selectedItem);
         transOrigin.getEngine().reload();
-        ChangeListener<Worker.State> cl= (observable, oldValue, newValue) -> {
-            if (newValue != Worker.State.SUCCEEDED) {
-                return;
+        ChangeListener<Worker.State> cl= new ChangeListener<Worker.State>() {
+            @Override
+            public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
+                if (newValue != Worker.State.SUCCEEDED) {
+                    transOrigin.getEngine().getLoadWorker().stateProperty().removeListener(this);
+                    return;
+                }
+                Document doc = Jsoup.parse((String) transOrigin.getEngine().executeScript("document.documentElement.outerHTML"));
+                Elements res = doc.getElementsByClass("gt-cd-c");
+                Elements tr = doc.select("span.tlid-translation.translation");
+                targetHistorique.getItems().add(tr.text());
+                motTranslatedLabel.setText(tr.text());
+                historique.getItems().add(historique.getItems().size(),selectedItem);
+
+                Element shortDefinitions = res.get(1);
+                Element translations = res.first();
+                for (Element number : shortDefinitions.getElementsByClass("gt-def-num")) {
+                    number.prependText("(");
+                    number.appendText(") ");
+                }
+                transTarget.getEngine().loadContent(Controleur.this.applyGCSS(translations.toString()));
+                transOrigin2.getEngine().loadContent(Controleur.this.applyGCSS(shortDefinitions.toString()));
+
             }
-            Document doc = Jsoup.parse((String) transOrigin.getEngine().executeScript("document.documentElement.outerHTML"));
-            Elements res = doc.getElementsByClass("gt-cd-c");
-            Element shortDefinitions =res.get(1);
-            Element translations =res.first();
-            for (Element number : shortDefinitions.getElementsByClass("gt-def-num")){
-                number.prependText("(");
-                number.appendText(") ");
-            }
-            transTarget.getEngine().loadContent(applyGCSS(translations.toString()));
-            transOrigin2.getEngine().loadContent(applyGCSS(shortDefinitions.toString()));
         };
 
         transOrigin.getEngine().getLoadWorker().stateProperty().addListener( cl);
@@ -180,7 +193,6 @@ public class Controleur implements Sujet {
     }
 
     private String applyGCSS(String toString) {
-        System.out.println(toString);
         StringBuilder page = new StringBuilder("<!doctype html>\n" +
                 "<html lang=\"fr\">\n" +
                 "<head>\n" +
@@ -201,6 +213,7 @@ public class Controleur implements Sujet {
         page.append("span.gt-def-num {color: #4169E1;}");
         page.append(".gt-cd-pos {color: #4169E1;}");
         page.append(".gt-baf-back {color: #666666;}");
+        page.append(".gt-def-example {color: #666666;}");
 
 
 

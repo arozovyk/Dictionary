@@ -2,13 +2,15 @@ package views.jfx;
 
 import controleur.Controleur;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
@@ -20,6 +22,7 @@ import views.MenuPrincipalInterface;
 import javax.swing.event.HyperlinkEvent;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Set;
 
 
 public class MenuPrincipal implements MenuPrincipalInterface {
@@ -29,6 +32,9 @@ public class MenuPrincipal implements MenuPrincipalInterface {
     public WebView transOrigin;
     public WebView transTarget;
     public ListView<String> historique;
+    public Label motOrigineLabel;
+    public Label motTranslatedLabel;
+    public ListView<String> targetHistory;
     private String res="";
     public WebView definitionWV;
     public TextField wordField;
@@ -50,17 +56,8 @@ public class MenuPrincipal implements MenuPrincipalInterface {
     }
 
     private void setPrimaryStage(Stage primaryStage) {
-        WebViewHyperlinkListener eventPrintingListener = event -> {
-            if (event.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)){
-                res = event.getDescription().toLowerCase();
-                defineWord(res);
-                wordField.setText(res);
-                controleur.getSuggesions(res,listSuggestion);
-                historique.getItems().add(historique.getItems().size(),res);
-            }
-            return false;
-        };
-        WebViews.addHyperlinkListener(definitionWV, eventPrintingListener);
+
+
         this.primaryStage = primaryStage;
     }
 
@@ -88,9 +85,55 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         primaryStage.setTitle("Dictionnaire");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
     }
+    @Override
+    public void initWelcome(){
+
+        WebViewHyperlinkListener eventPrintingListener = event -> {
+            if (event.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)){
+                res = event.getDescription().toLowerCase();
+                defineWord(res);
+                wordField.setText(res);
+                controleur.getSuggesions(res,listSuggestion);
+            }
+            return false;
+        };
+
+        WebViews.addHyperlinkListener(definitionWV, eventPrintingListener);
+
+        WebViewHyperlinkListener eventPrintingListener2 = event -> {
+            System.out.println(event);
+            return false;
+        };
+
+        WebViews.addHyperlinkListener(transTarget, eventPrintingListener2);
 
 
+        defineWord("bienvenue");
+        wordField.setPromptText("Saisissez le mot à définir");
+        Set<Node> nodes =historique.lookupAll(".scroll-bar");
+        for(Node n1: nodes){
+            if (n1 instanceof ScrollBar) {
+                final ScrollBar bar1 = (ScrollBar) n1;
+                Set<Node> nodes2 =targetHistory.lookupAll(".scroll-bar");
+                for (Node n2 : nodes2){
+                    if (n2 instanceof ScrollBar) {
+                        final ScrollBar bar2 = (ScrollBar) n2;
+                        if((bar1.getOrientation()== Orientation.HORIZONTAL
+                                &&bar2.getOrientation()==Orientation.HORIZONTAL)
+                                ||(bar1.getOrientation()==Orientation.VERTICAL&&bar2.getOrientation()==Orientation.VERTICAL)){
+                            bar1.valueProperty().bindBidirectional(bar2.valueProperty());
+                        }
+                    }
+                }
+
+            }
+        }
+
+
+    }
 
 
 
@@ -133,7 +176,8 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         String selectedItem= listSuggestion.getSelectionModel().getSelectedItem();
         wordField.setText(selectedItem);
         defineWord(selectedItem);
-        historique.getItems().add(historique.getItems().size(),selectedItem);
+        //24 chataaaaaaaaaaaaaaaaaeee
+
     }
 
 
@@ -148,7 +192,10 @@ public class MenuPrincipal implements MenuPrincipalInterface {
                 }
             }
         });
-        controleur.translate(hiddenWV,transTarget, transOrigin,word);
+        motOrigineLabel.setText(word);
+
+        controleur.translate(hiddenWV,transTarget, transOrigin,word,motTranslatedLabel,targetHistory,historique);
+
     }
 
     public void getDefinitionsListViewKeyHist(KeyEvent keyEvent) {
@@ -159,7 +206,17 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
     public void getDefinitionsListViewMouseHist() {
         String selectedItem= historique.getSelectionModel().getSelectedItem();
-        wordField.setText(selectedItem);
-        defineWord(selectedItem);
+        if(selectedItem.length()>0){
+            wordField.setText(selectedItem);
+            defineWord(selectedItem);
+        }
+
+    }
+
+    public void effacerLHistorique(ActionEvent actionEvent) {
+        historique.getSelectionModel().clearSelection();
+        historique.getItems().clear();
+        targetHistory.getSelectionModel().clearSelection();
+        targetHistory.getItems().clear();
     }
 }
