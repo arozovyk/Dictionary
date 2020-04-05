@@ -75,7 +75,7 @@ public class Controleur implements Sujet {
 
 
     public String getDefinitions(String text) throws Exception{
-        String url = "https://fr.wiktionary.org/wiki/"+text;
+        String url = "https://fr.wiktionary.org/wiki/"+text.trim().replace(' ','_');
         URL obj = new URL(url);
         Document doc =getHtmlContent((HttpURLConnection) obj.openConnection());
         Element content =doc.getElementsByClass("mw-parser-output").first();
@@ -119,7 +119,9 @@ public class Controleur implements Sujet {
             @Override
             protected  String [] call() throws Exception {
                 String [] sug = new String[17];
-                String url = "https://fr.wiktionary.org/w/api.php?action=opensearch&format=xml&formatversion=2&search="+text+"&namespace=0%7C100%7C106%7C110&limit=16&suggest=true";
+                String url =
+                        "https://fr.wiktionary.org/w/api.php?action=opensearch&format=xml&formatversion=2&search="
+                                +text+"&namespace=0%7C100%7C106%7C110&limit=16&suggest=true";
                 URL obj = new URL(url);
                 Document doc =getHtmlContent((HttpURLConnection) obj.openConnection());
                 Elements content =doc.getElementsByTag("Item");
@@ -168,6 +170,7 @@ public class Controleur implements Sujet {
                 }
                 Document doc = Jsoup.parse((String) transOrigin.getEngine().executeScript("document.documentElement.outerHTML"));
                 Elements res = doc.getElementsByClass("gt-cd-c");
+                //      <span class="gt-baf-term-text"><span class="gt-baf-cell gt-baf-word-clickable">кавалер</span></span>
                 Elements tr = doc.select("span.tlid-translation.translation");
                 targetHistorique.getItems().add(tr.text());
                 motTranslatedLabel.setText(tr.text());
@@ -221,6 +224,11 @@ public class Controleur implements Sujet {
        // System.out.println(page);
         return page.toString();
 
+
+    }
+
+    public void saveHistory(WebView transTarget) {
+        //TODO write to file
 
     }
 }

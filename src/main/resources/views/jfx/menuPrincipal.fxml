@@ -45,7 +45,7 @@
                   <SplitPane dividerPositions="0.48067393458870167" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <items>
                         <WebView fx:id="transOrigin" prefHeight="350.0" prefWidth="762.0" />
-                        <WebView fx:id="transTarget" prefHeight="200.0" prefWidth="200.0" />
+                        <WebView fx:id="transTarget" onMouseClicked="#targetOnClicked" prefHeight="200.0" prefWidth="200.0" />
                      </items>
                   </SplitPane>
                   <SplitPane orientation="VERTICAL" prefHeight="437.0" prefWidth="73.0" GridPane.columnIndex="1">
@@ -60,6 +60,7 @@
                         <ListView fx:id="historique" layoutX="4.0" layoutY="31.0" onKeyPressed="#getDefinitionsListViewKeyHist" onMouseClicked="#getDefinitionsListViewMouseHist" prefHeight="282.0" prefWidth="143.0" />
                         <Button layoutX="4.0" layoutY="317.0" mnemonicParsing="false" onAction="#effacerLHistorique" prefHeight="26.0" prefWidth="64.0" text="Effacer" />
                         <ListView fx:id="targetHistory" layoutX="147.0" layoutY="31.0" prefHeight="282.0" prefWidth="158.0" />
+                        <Button layoutX="201.0" layoutY="318.0" mnemonicParsing="false" onAction="#saveHistory" prefHeight="25.0" prefWidth="81.0" text="Button" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -85,7 +86,8 @@
                            </font>
                         </Label>
                      </children></AnchorPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                     </AnchorPane>
                </children>
             </GridPane>
         </items>
