@@ -7,6 +7,17 @@
     <groupId>fr.univ.orleans.pnt</groupId>
     <artifactId>parisJFX</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.cloud</groupId>
+                <artifactId>libraries-bom</artifactId>
+                <version>4.4.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
             <plugin>
@@ -40,6 +51,10 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-speech</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.codefx.libfx</groupId>
             <artifactId>LibFX</artifactId>

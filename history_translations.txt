@@ -1,0 +1,4 @@
+рыцарь,chevalier
+De la nobless,noble
+величество,majesté
+величие,grandeur

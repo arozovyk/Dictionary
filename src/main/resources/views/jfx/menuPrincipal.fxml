@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.web.*?>
@@ -13,7 +14,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="topNiveau" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="851.0" prefWidth="1264.0" spacing="20.0" stylesheets="@../../css/fxstyle.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.jfx.MenuPrincipal">
+<VBox fx:id="topNiveau" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0" prefWidth="1387.0" spacing="20.0" stylesheets="@../../css/fxstyle.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.jfx.MenuPrincipal">
    <opaqueInsets>
       <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
    </opaqueInsets>
@@ -21,27 +22,21 @@
       <Cursor fx:constant="SE_RESIZE" />
    </cursor>
    <children>
-      <SplitPane orientation="VERTICAL" prefHeight="830.0" prefWidth="1264.0">
+      <SplitPane orientation="VERTICAL" prefHeight="830.0" prefWidth="1397.0">
         <items>
-            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="825.0" prefWidth="1259.0">
+            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="828.0" prefWidth="1386.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="334.0" minWidth="10.0" prefWidth="326.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.0" minWidth="0.0" prefWidth="0.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1061.0" minWidth="10.0" prefWidth="933.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1061.0" minWidth="10.0" prefWidth="1051.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="490.0" minHeight="0.0" prefHeight="475.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="441.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="441.0" minHeight="0.0" prefHeight="376.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="441.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="441.0" minHeight="0.0" prefHeight="330.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <WebView fx:id="definitionWV" prefHeight="384.0" prefWidth="695.0" GridPane.columnIndex="2" />
-                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-                     <items>
-                        <TextField fx:id="wordField" onKeyPressed="#getSuggesions" prefHeight="26.0" prefWidth="223.0" />
-                        <ListView fx:id="listSuggestion" onKeyPressed="#getDefinitionsListViewKey" onMouseClicked="#getDefinitionsListViewMouse" prefHeight="401.0" prefWidth="319.0" />
-                     </items>
-                  </SplitPane>
+                  <WebView fx:id="definitionWV" prefHeight="471.0" prefWidth="1050.0" GridPane.columnIndex="2" />
                   <SplitPane dividerPositions="0.48067393458870167" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <items>
                         <WebView fx:id="transOrigin" prefHeight="350.0" prefWidth="762.0" />
@@ -50,20 +45,24 @@
                   </SplitPane>
                   <SplitPane orientation="VERTICAL" prefHeight="437.0" prefWidth="73.0" GridPane.columnIndex="1">
                     <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="368.0" prefWidth="0.0" visible="false" />
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="462.0" prefWidth="87.0" visible="false" />
                     </items>
                   </SplitPane>
                   <WebView fx:id="hiddenWV" prefHeight="200.0" prefWidth="155.0" visible="false" GridPane.rowIndex="2" />
-                  <AnchorPane prefHeight="351.0" prefWidth="233.0" GridPane.rowIndex="2">
+                  <AnchorPane prefHeight="339.0" prefWidth="330.0" GridPane.rowIndex="2">
                      <children>
-                        <Label alignment="TOP_CENTER" layoutX="110.0" layoutY="14.0" prefHeight="3.0" prefWidth="74.0" text="Historique" />
-                        <ListView fx:id="historique" layoutX="4.0" layoutY="31.0" onKeyPressed="#getDefinitionsListViewKeyHist" onMouseClicked="#getDefinitionsListViewMouseHist" prefHeight="282.0" prefWidth="143.0" />
-                        <Button layoutX="4.0" layoutY="317.0" mnemonicParsing="false" onAction="#effacerLHistorique" prefHeight="26.0" prefWidth="64.0" text="Effacer" />
-                        <ListView fx:id="targetHistory" layoutX="147.0" layoutY="31.0" prefHeight="282.0" prefWidth="158.0" />
-                        <Button layoutX="201.0" layoutY="318.0" mnemonicParsing="false" onAction="#saveHistory" prefHeight="25.0" prefWidth="81.0" text="Button" />
+                        <Label alignment="TOP_CENTER" layoutX="135.0" layoutY="36.0" prefHeight="3.0" prefWidth="74.0" text="Historique" />
+                        <ListView fx:id="historique" layoutX="-2.0" layoutY="51.0" onKeyPressed="#getDefinitionsListViewKeyHist" onMouseClicked="#getDefinitionsListViewMouseHist" prefHeight="246.0" prefWidth="172.0" />
+                        <Button layoutX="7.0" layoutY="300.0" mnemonicParsing="false" onAction="#effacerLHistorique" prefHeight="26.0" prefWidth="65.0" text="Effacer" />
+                        <ListView fx:id="targetHistory" layoutX="172.0" layoutY="51.0" prefHeight="246.0" prefWidth="158.0" />
+                        <Button layoutX="203.0" layoutY="300.0" mnemonicParsing="false" onAction="#appendHistoryToFile" prefHeight="25.0" prefWidth="96.0" text="Sauvegarder" />
+                        <Button layoutX="84.0" layoutY="300.0" mnemonicParsing="false" onAction="#removeLastHistoryEntry" text="Corriger" />
+                        <TextField fx:id="historyTranslationTarget" layoutX="7.0" layoutY="11.0" prefHeight="25.0" prefWidth="244.0" />
+                        <Button layoutX="251.0" layoutY="11.0" mnemonicParsing="false" onAction="#modifyHistoryTradTarget" prefHeight="25.0" prefWidth="65.0" text="Modifier" />
+                        <TextField fx:id="lineNumberToCorrect" layoutX="155.0" layoutY="300.0" prefHeight="25.0" prefWidth="30.0" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <AnchorPane prefHeight="39.0" prefWidth="943.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <children>
                         <Label layoutY="7.0" prefHeight="26.0" prefWidth="47.0" style="-fx-text-fill: #87CEFA;" text="Mot:">
                            <font>
@@ -86,8 +85,29 @@
                            </font>
                         </Label>
                      </children></AnchorPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
-                     </AnchorPane>
+                  <AnchorPane prefHeight="51.0" prefWidth="345.0" GridPane.rowIndex="1" />
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="listSuggestion" layoutY="69.0" onKeyPressed="#getDefinitionsListViewKey" onMouseClicked="#getDefinitionsListViewMouse" prefHeight="395.0" prefWidth="327.0" />
+                        <TextField fx:id="wordField" layoutY="30.0" onKeyPressed="#getSuggesions" prefHeight="38.0" prefWidth="327.0">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </TextField>
+                        <Text layoutX="14.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Appuiez → pour utiliser la voix ">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="9.0" layoutX="232.5" layoutY="15.0" stroke="BLACK" strokeType="INSIDE" width="5.0" />
+                        <Circle fx:id="microphoneCricle" fill="#c6a71e40" layoutX="235.0" layoutY="12.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" />
+                        <Text fx:id="speakIndicator" fill="#e42a2a" layoutX="252.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Parlez" wrappingWidth="53.84814453125">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
                </children>
             </GridPane>
         </items>

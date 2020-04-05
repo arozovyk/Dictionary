@@ -75,7 +75,7 @@ public class Controleur implements Sujet {
 
 
     public String getDefinitions(String text) throws Exception{
-        String url = "https://fr.wiktionary.org/wiki/"+text.trim().replace(' ','_');
+        String url = "https://fr.wiktionary.org/wiki/"+text.trim().toLowerCase().replace(' ','_');
         URL obj = new URL(url);
         Document doc =getHtmlContent((HttpURLConnection) obj.openConnection());
         Element content =doc.getElementsByClass("mw-parser-output").first();

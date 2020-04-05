@@ -1,7 +1,10 @@
 package views.jfx;
 
 import controleur.Controleur;
+import controleur.SpeechRecognition;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,16 +13,23 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import org.codefx.libfx.control.webview.WebViewHyperlinkListener;
 import org.codefx.libfx.control.webview.WebViews;
+import org.jsoup.select.Elements;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,9 +40,17 @@ import org.w3c.dom.html.HTMLIFrameElement;
 import views.MenuPrincipalInterface;
 
 import javax.swing.event.HyperlinkEvent;
+import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Set;
+
+import static controleur.SpeechRecognition.streamingMicRecognize;
 
 
 public class MenuPrincipal implements MenuPrincipalInterface {
@@ -45,6 +63,10 @@ public class MenuPrincipal implements MenuPrincipalInterface {
     public Label motOrigineLabel;
     public Label motTranslatedLabel;
     public ListView<String> targetHistory;
+    public TextField historyTranslationTarget;
+    public Text speakIndicator;
+    public Circle microphoneCricle;
+    public TextField lineNumberToCorrect;
     private String res="";
     public WebView definitionWV;
     public TextField wordField;
@@ -85,7 +107,7 @@ public class MenuPrincipal implements MenuPrincipalInterface {
         MenuPrincipal vue = fxmlLoader.getController();
         vue.setControleur(c);
         assert root != null;
-        vue.setScene(new Scene(root, 1230, 830));
+        vue.setScene(new Scene(root, 1387, 834));
         vue.setPrimaryStage(primaryStage);
         return vue;
     }
@@ -196,6 +218,9 @@ public class MenuPrincipal implements MenuPrincipalInterface {
             }
         });
 
+        SpeechRecognition.init();
+        speakIndicator.setVisible(false);
+
     }
 
     private void addListener(NodeList nodeList) {
@@ -216,7 +241,13 @@ public class MenuPrincipal implements MenuPrincipalInterface {
 
 
     public void getSuggesions(KeyEvent keyEvent) {
-
+        if (keyEvent.getCode() == KeyCode.RIGHT) {
+            wordField.setText("");
+            res="";
+            speechToText();
+            return;
+        }
+        keyEvent.consume();
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
             defineWord(res);
             return;
@@ -229,14 +260,55 @@ public class MenuPrincipal implements MenuPrincipalInterface {
             return;
         }
 
-        if(keyEvent.getCode().equals(KeyCode.BACK_SPACE)&&!res.isEmpty())
-          res=wordField.getText().substring(0,wordField.getText().length()-1);
+        if(keyEvent.getCode().equals(KeyCode.BACK_SPACE)&&!res.isEmpty()) {
+            res=wordField.getText().substring(0,wordField.getText().length()-1);
+            wordField.setText(res);
+            wordField.positionCaret(res.length());
+        }
+
         if(!keyEvent.getCode().equals(KeyCode.BACK_SPACE))
-          res=wordField.getText()+ keyEvent.getText();
+            res=wordField.getText()+ keyEvent.getText();
 
         controleur.getSuggesions(res,listSuggestion);
+
     }
 
+    private void speechToText() {
+        try {
+            Paint oldPaint =microphoneCricle.fillProperty().get();
+            Task<String > recognizeTask =new Task< String>() {
+                @Override
+                protected  String call() throws Exception {
+                    return streamingMicRecognize();
+                }
+            };
+            recognizeTask.setOnRunning(event -> {
+                    speakIndicator.setVisible(true);
+                    microphoneCricle.setFill(Color.RED);
+            });
+
+            recognizeTask.setOnSucceeded(event -> {
+                wordField.setText(recognizeTask.getValue());
+                res=recognizeTask.getValue();
+                defineWord(res);
+                wordField.positionCaret(res.length());
+                speakIndicator.setVisible(false);
+                microphoneCricle.setFill(oldPaint);
+            });
+
+            new Service<String>() {
+                @Override
+                protected Task<String> createTask() {
+                    return recognizeTask;
+                }
+            }.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 
     public void getDefinitionsListViewKey(KeyEvent keyEvent) {
@@ -299,6 +371,39 @@ public class MenuPrincipal implements MenuPrincipalInterface {
     }
 
     public void targetOnClicked(MouseEvent mouseEvent) {
+
+    }
+
+    public void modifyHistoryTradTarget(ActionEvent actionEvent) {
+        String text=historyTranslationTarget.getText().trim();
+        int size=targetHistory.getItems().size();
+        targetHistory.getItems().set(size-1,text.isEmpty()?targetHistory.getItems().get(size-1):text);
+    }
+
+    public void removeLastHistoryEntry(ActionEvent actionEvent) {
+        int offset=0;
+        if(!lineNumberToCorrect.getText().isEmpty()){
+            offset=Integer.parseInt(lineNumberToCorrect.getText());
+        }
+        targetHistory.getItems().remove(targetHistory.getItems().size()-(1+offset));
+        historique.getItems().remove(historique.getItems().size()-(1+offset));
+    }
+
+    public void appendHistoryToFile(ActionEvent actionEvent) {
+        Iterator<String> it1= targetHistory.getItems().iterator();
+        Iterator<String> it2= historique.getItems().iterator();
+        Writer output= null;
+        try {
+            output = new BufferedWriter(new FileWriter("history_translations.txt",true));
+            while (it1.hasNext()&&it2.hasNext()) {
+                output.append(it1.next()).append(",").append(it2.next()).append("\n");
+            }
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 
     }
 }
